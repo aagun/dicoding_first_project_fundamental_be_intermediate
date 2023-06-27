@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules/
+
+# Node
+package-lock.json
+
+# Envirotnment
+.env
+.prod.env
+
+# Eslint
+.eslintrc.json
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
