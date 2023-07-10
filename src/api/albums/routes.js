@@ -2,27 +2,27 @@ const routes = (handler) => [
   {
     method: "POST",
     path: "/albums",
-    handler: handler.postAlbumsHandler,
+    handler: (request, h) => handler.postAlbumsHandler(request, h),
   },
   {
     method: "GET",
     path: "/albums",
-    handler: handler.getAlbumsHandler,
+    handler: (request, h) => handler.getAlbumsHandler(request, h),
   },
   {
     method: "GET",
     path: "/albums/{id}",
-    handler: handler.getAlbumsByIdWithSongsHandler,
+    handler: (request, h) => handler.getAlbumsByIdWithSongsHandler(request, h),
   },
   {
     method: "PUT",
     path: "/albums/{id}",
-    handler: handler.putAlbumsByIdHandler,
+    handler: (request, h) => handler.putAlbumsByIdHandler(request, h),
   },
   {
     method: "DELETE",
     path: "/albums/{id}",
-    handler: handler.deleteAlbumsByIdHandler,
+    handler: (request, h) => handler.deleteAlbumsByIdHandler(request, h),
   },
 ];
 

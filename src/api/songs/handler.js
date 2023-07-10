@@ -4,11 +4,6 @@ class SongsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
-    this.postSongsHandler = this.postSongsHandler.bind(this);
-    this.getSongsHandler = this.getSongsHandler.bind(this);
-    this.getSongsByIdHandler = this.getSongsByIdHandler.bind(this);
-    this.putSongsByIdHandler = this.putSongsByIdHandler.bind(this);
-    this.deleteSongsByIdHandler = this.deleteSongsByIdHandler.bind(this);
   }
 
   async postSongsHandler(request, h) {
@@ -40,7 +35,10 @@ class SongsHandler {
   async putSongsByIdHandler(request, h) {
     try {
       this._validator.validateSongsPayload(request.payload);
-      await this._service.updateById({ ...request.params, ...request.payload });
+      await this._service.updateById({
+        ...request.params,
+        ...request.payload,
+      });
       return ResponseHelper.modified(h, "Song berhasil diubah");
     } catch (error) {
       return ResponseHelper.responseExceptionHelper(h, error);
