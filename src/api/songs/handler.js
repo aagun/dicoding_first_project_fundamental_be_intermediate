@@ -7,13 +7,9 @@ class SongsHandler {
   }
 
   async postSongsHandler(request, h) {
-    try {
-      this._validator.validateSongsPayload(request.payload);
-      const songId = await this._service.save({ ...request.payload });
-      return ResponseHelper.created(h, { songId }, "Song berhasil ditambahkan");
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    this._validator.validateSongsPayload(request.payload);
+    const songId = await this._service.save({ ...request.payload });
+    return ResponseHelper.created(h, { songId }, "Song berhasil ditambahkan");
   }
 
   async getSongsHandler(request, h) {
@@ -23,35 +19,23 @@ class SongsHandler {
   }
 
   async getSongsByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      const song = await this._service.findById(id);
-      return ResponseHelper.ok(h, { song });
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    const { id } = request.params;
+    const song = await this._service.findById(id);
+    return ResponseHelper.ok(h, { song });
   }
 
   async putSongsByIdHandler(request, h) {
-    try {
-      this._validator.validateSongsPayload(request.payload);
-      await this._service.updateById({
-        ...request.params,
-        ...request.payload,
-      });
-      return ResponseHelper.modified(h, "Song berhasil diubah");
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    this._validator.validateSongsPayload(request.payload);
+    await this._service.updateById({
+      ...request.params,
+      ...request.payload,
+    });
+    return ResponseHelper.modified(h, "Song berhasil diubah");
   }
 
   async deleteSongsByIdHandler(request, h) {
-    try {
-      await this._service.deleteById(request.params.id);
-      return ResponseHelper.modified(h, "Song berhasil dihapus");
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    await this._service.deleteById(request.params.id);
+    return ResponseHelper.modified(h, "Song berhasil dihapus");
   }
 }
 

@@ -7,17 +7,9 @@ class AlbumsHandler {
   }
 
   async postAlbumsHandler(request, h) {
-    try {
-      this._validator.validateAlbumPayload(request.payload);
-      const albumId = await this._service.save({ ...request.payload });
-      return ResponseHelper.created(
-        h,
-        { albumId },
-        "Album berhasil ditambahkan"
-      );
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    this._validator.validateAlbumPayload(request.payload);
+    const albumId = await this._service.save({ ...request.payload });
+    return ResponseHelper.created(h, { albumId }, "Album berhasil ditambahkan");
   }
 
   async getAlbumsHandler(_, h) {
@@ -26,40 +18,24 @@ class AlbumsHandler {
   }
 
   async getAlbumsByIdWithSongsHandler(request, h) {
-    try {
-      const album = await this._service.findByIdAndWithSongs(request.params.id);
-      return ResponseHelper.ok(h, { album });
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    const album = await this._service.findByIdAndWithSongs(request.params.id);
+    return ResponseHelper.ok(h, { album });
   }
 
   async getAlbumsByIdHandler(request, h) {
-    try {
-      const album = await this._service.findById(request.params.id);
-      return ResponseHelper.ok(h, { album });
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    const album = await this._service.findById(request.params.id);
+    return ResponseHelper.ok(h, { album });
   }
 
   async putAlbumsByIdHandler(request, h) {
-    try {
-      this._validator.validateAlbumPayload(request.payload);
-      await this._service.updateById({ ...request.params, ...request.payload });
-      return ResponseHelper.modified(h, "Album berhasil diperbaharui");
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    this._validator.validateAlbumPayload(request.payload);
+    await this._service.updateById({ ...request.params, ...request.payload });
+    return ResponseHelper.modified(h, "Album berhasil diperbaharui");
   }
 
   async deleteAlbumsByIdHandler(request, h) {
-    try {
-      await this._service.deleteById(request.params.id);
-      return ResponseHelper.modified(h, "Album berhasil dihapus");
-    } catch (error) {
-      return ResponseHelper.responseExceptionHelper(h, error);
-    }
+    await this._service.deleteById(request.params.id);
+    return ResponseHelper.modified(h, "Album berhasil dihapus");
   }
 }
 

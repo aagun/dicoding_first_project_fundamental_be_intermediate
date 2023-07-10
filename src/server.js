@@ -4,6 +4,7 @@ const Hapi = require("@hapi/hapi");
 const { albums, songs } = require("./api");
 const { AlbumsValidator, SongsValidator } = require("./validator");
 const { AlbumsServices, SongsServices } = require("./services");
+const ResponseHelper = require("./utils/ResponseHelper");
 
 const init = async () => {
   const server = Hapi.server({
@@ -32,6 +33,15 @@ const init = async () => {
       },
     },
   ]);
+
+  // Error handler (Rest Advice)
+  server.ext("onPreResponse", (request, h) => {
+    const { response } = request;
+    if (response instanceof Error) {
+      return ResponseHelper.responseExceptionHelper(h, response);
+    }
+    return h.continue;
+  });
 
   await server.start();
   console.info("Server running on %s", server.info.uri);
