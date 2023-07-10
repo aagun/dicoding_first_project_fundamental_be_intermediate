@@ -63,7 +63,11 @@ class AlbumsServices {
         values: [id],
       };
       const { rows } = await this._pool.query(query);
-      console.log({ rows });
+
+      if (!rows.length) {
+        throw new NotFoundException("Album tidak ditemukan");
+      }
+
       let albumSongs = {
         id: "",
         name: "",
@@ -72,7 +76,6 @@ class AlbumsServices {
       };
 
       rows.forEach((album, index) => {
-        console.log({ index, album });
         if (rows.length - 1 == index) {
           albumSongs.id = album.id;
           albumSongs.name = album.name;
@@ -90,7 +93,6 @@ class AlbumsServices {
         });
       });
 
-      console.log({ albumSongs });
       return albumSongs;
     } catch (error) {
       throw new NotFoundException("Data album tidak ditemukan");

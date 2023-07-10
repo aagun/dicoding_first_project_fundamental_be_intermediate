@@ -3,7 +3,6 @@ const { AlbumPayloadSchema } = require("./schema");
 
 const AlbumsValidator = {
   validateAlbumPayload: (payload) => {
-    console.log({ payload });
     const validationResult = AlbumPayloadSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantException(validationResult.error.message);

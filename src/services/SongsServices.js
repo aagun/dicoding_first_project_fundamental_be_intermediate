@@ -3,7 +3,7 @@ const { generateId } = require("../utils/Utils");
 const InvariantException = require("../exceptions/InvariantException");
 const NotFoundException = require("../exceptions/NotFoundException");
 const AlbumsServices = require("./AlbumsServices");
-const { SongViewObject } = require("../utils/ViewObject");
+const { SongViewObject, SongsViewObject } = require("../utils/ViewObject");
 
 class SongsServices {
   constructor() {
@@ -44,7 +44,7 @@ class SongsServices {
       return rows;
     }
 
-    return (rows = rows.map((song) => SongViewObject(song)));
+    return (rows = rows.map((song) => SongsViewObject(song)));
   }
 
   async findByAlbumId(albumId) {
