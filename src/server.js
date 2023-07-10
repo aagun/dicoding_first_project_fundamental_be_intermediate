@@ -1,6 +1,9 @@
-require(".dotenv");
+require("dotenv").config();
 
 const Hapi = require("@hapi/hapi");
+const { albums, songs } = require("./api");
+const { AlbumsValidator, SongsValidator } = require("./validator");
+const { AlbumsServices, SongsServices } = require("./services");
 
 const init = async () => {
   const server = Hapi.server({
@@ -13,12 +16,29 @@ const init = async () => {
     },
   });
 
+  await server.register([
+    {
+      plugin: albums,
+      options: {
+        service: new AlbumsServices(),
+        validator: AlbumsValidator,
+      },
+    },
+    {
+      plugin: songs,
+      options: {
+        service: new SongsServices(),
+        validator: SongsValidator,
+      },
+    },
+  ]);
+
   await server.start();
-  console.log("Server running on %s", server.info.uri);
+  console.info("Server running on %s", server.info.uri);
 };
 
 process.on("unhandledRejection", (err) => {
-  console.log(err);
+  console.error(err);
   process.exit(1);
 });
 
