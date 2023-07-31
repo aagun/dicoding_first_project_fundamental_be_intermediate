@@ -15,7 +15,7 @@
 3. Jalankan script berikut pada terminal atau cmd namun sebelum itu sesuaikan value `<NAMA_CONTAINER>`, `<NAMA_DATABASE>`, `<NAMA_USER>` dan `<PASSWORD_DATABASE>` dengan konfigurasi kalian inginkan
 
 ```bash
-  docker run -it --rm \
+  docker run --rm \
     --name <NAMA_CONTAINER> \
     -e POSTGRES_DB=<NAMA_DATABASE> \
     -e POSTGRES_USER=<NAMA_USER> \
