@@ -42,6 +42,16 @@ const ResponseHelper = {
       return ResponseHelper.clientProcessingErrorHandler(h, error);
     }
 
+    const { statusCode, error: message } = error.output.payload;
+    if (statusCode.toString().startsWith(4)) {
+      return h
+        .response({
+          status: "fail",
+          message,
+        })
+        .code(statusCode);
+    }
+
     return ResponseHelper.serverProcessingErrorHandler(h, error);
   },
 
