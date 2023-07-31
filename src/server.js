@@ -2,14 +2,19 @@ require("dotenv").config();
 
 const Hapi = require("@hapi/hapi");
 const Jwt = require("@hapi/jwt");
-const { albums, songs, users } = require("./api");
+const { albums, songs, users, authentications } = require("./api");
 const {
   AlbumsValidator,
   SongsValidator,
   UsersValidator,
   AuthenticationsValidator,
 } = require("./validator");
-const { AlbumsServices, SongsServices, UsersServices } = require("./services");
+const {
+  AlbumsServices,
+  SongsServices,
+  UsersServices,
+  AuthenticationsServices,
+} = require("./services");
 const TokenManager = require("./tokenize/TokenManager");
 const ResponseHelper = require("./utils/ResponseHelper");
 
@@ -66,10 +71,10 @@ const init = async () => {
       },
     },
     {
-      plugin: users,
+      plugin: authentications,
       options: {
-        service: null,
-        userService: new UsersServices(),
+        service: new AuthenticationsServices(),
+        usersService: new UsersServices(),
         tokenManager: TokenManager,
         validator: AuthenticationsValidator,
       },

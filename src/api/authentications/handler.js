@@ -24,7 +24,7 @@ class AuthenticationHandler {
     await this._service.verifyRefreshToken(refreshToken);
     const { id } = this._tokenManager.verifyRefreshToken(refreshToken);
     const accessToken = this._tokenManager.generateAccessToken({ id });
-    return ResponseHelper.success(h, { accessToken });
+    return ResponseHelper.ok(h, { accessToken });
   }
 
   async deleteAuthenticationHandler(request, h) {
@@ -32,7 +32,7 @@ class AuthenticationHandler {
     const { refreshToken } = request.payload;
     await this._service.verifyRefreshToken(refreshToken);
     await this._service.delete(refreshToken);
-    return ResponseHelper.ok(h, null, "Refresh token berhasil dihapus");
+    return ResponseHelper.modified(h, "Refresh token berhasil dihapus");
   }
 }
 
