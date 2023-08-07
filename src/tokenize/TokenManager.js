@@ -1,4 +1,4 @@
-const InvariantException = require("../../../notes-app/src/exceptions/InvariantException");
+const InvariantException = require("../exceptions/InvariantException");
 
 const Jwt = require("@hapi/jwt");
 
