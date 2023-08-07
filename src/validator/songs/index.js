@@ -3,9 +3,9 @@ const { SongPayloadSchema } = require("./schema");
 
 const SongsValidator = {
   validateSongsPayload: (payload) => {
-    const validationResult = SongPayloadSchema.validate(payload);
-    if (validationResult.error) {
-      throw new InvariantException(validationResult.error.message);
+    const { error } = SongPayloadSchema.validate(payload);
+    if (error) {
+      throw new InvariantException(error.message);
     }
   },
 };

@@ -77,6 +77,25 @@ class SongsServices {
     throw new NotFoundException("Song tidak ditemukan");
   }
 
+  async findByOwnerOrUserId(owner) {
+    const query = {
+      text: ` SELECT 
+                songs.id,
+                songs.title,
+                songs.performer 
+              FROM songs
+              LEFT JOIN playlist_songs ps ON ps.song_id = songs.id
+              LEFT JOIN playlists p ON p.id = ps.playlist_id
+              LEFT JOIN collaborations c ON c.playlist_id = p.id
+              WHERE p.owner = $1 OR c.user_id = $1`,
+      values: [owner],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    return rows;
+  }
+
   async updateById(
     { id, title, year, genre, performer, duration = null, albumId = null },
     updatedBy = "Developer"

@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const InvariantException = require("../exceptions/InvariantException");
 const AuthenticationException = require("../exceptions/AuthenticationException");
 const { generateId } = require("../utils/Utils");
+const NotFoundException = require("../exceptions/NotFoundException");
 
 class UsersServices {
   constructor() {
@@ -23,6 +24,24 @@ class UsersServices {
     }
 
     throw new InvariantException("User gagal ditambahkan");
+  }
+
+  async findById(userId) {
+    const query = {
+      text: "SELECT * FROM users WHERE id = $1",
+      values: [userId],
+    };
+    const { rows } = await this._pool.query(query);
+
+    if (rows.length) {
+      return rows[0];
+    }
+
+    throw new NotFoundException("User tidak ditemukan");
+  }
+
+  async verifyUserExist(userId) {
+    await this.findById(userId);
   }
 
   async findByUsername(username) {

@@ -2,23 +2,45 @@ require("dotenv").config();
 
 const Hapi = require("@hapi/hapi");
 const Jwt = require("@hapi/jwt");
-const { albums, songs, users, authentications } = require("./api");
+const TokenManager = require("./tokenize/TokenManager");
+const ResponseHelper = require("./utils/ResponseHelper");
+const {
+  albums,
+  songs,
+  users,
+  authentications,
+  playlists,
+  collaborations,
+} = require("./api");
+
 const {
   AlbumsValidator,
   SongsValidator,
   UsersValidator,
   AuthenticationsValidator,
+  PlaylistsValidator,
+  CollaborationsValidator,
 } = require("./validator");
+
 const {
   AlbumsServices,
   SongsServices,
   UsersServices,
   AuthenticationsServices,
+  PlaylistsServices,
+  PlaylistSongsServices,
+  CollaborationsServices,
+  ActivitiesServices
 } = require("./services");
-const TokenManager = require("./tokenize/TokenManager");
-const ResponseHelper = require("./utils/ResponseHelper");
 
 const init = async () => {
+  const collaborationsService = new CollaborationsServices();
+  const playlistsService = new PlaylistsServices(collaborationsService);
+  const playlistSongsService = new PlaylistSongsServices(playlistsService);
+  const songsService = new SongsServices();
+  const usersService = new UsersServices();
+  const activitiesService = new ActivitiesServices();
+
   const server = Hapi.server({
     port: process.env.PORT,
     host: process.env.HOST,
@@ -59,14 +81,14 @@ const init = async () => {
     {
       plugin: songs,
       options: {
-        service: new SongsServices(),
+        service: songsService,
         validator: SongsValidator,
       },
     },
     {
       plugin: users,
       options: {
-        service: new UsersServices(),
+        service: usersService,
         validator: UsersValidator,
       },
     },
@@ -74,9 +96,28 @@ const init = async () => {
       plugin: authentications,
       options: {
         service: new AuthenticationsServices(),
-        usersService: new UsersServices(),
+        usersService,
         tokenManager: TokenManager,
         validator: AuthenticationsValidator,
+      },
+    },
+    {
+      plugin: playlists,
+      options: {
+        playlistsService,
+        playlistSongsService,
+        songsService,
+        activitiesService,
+        validator: PlaylistsValidator,
+      },
+    },
+    {
+      plugin: collaborations,
+      options: {
+        service: collaborationsService,
+        playlistsService,
+        usersService,
+        validator: CollaborationsValidator,
       },
     },
   ]);
