@@ -11,6 +11,7 @@ const {
   authentications,
   playlists,
   collaborations,
+  exportsPlaylist,
 } = require("./api");
 
 const {
@@ -20,6 +21,7 @@ const {
   AuthenticationsValidator,
   PlaylistsValidator,
   CollaborationsValidator,
+  ExportsValidator,
 } = require("./validator");
 
 const {
@@ -30,7 +32,8 @@ const {
   PlaylistsServices,
   PlaylistSongsServices,
   CollaborationsServices,
-  ActivitiesServices
+  ActivitiesServices,
+  ProducerServices,
 } = require("./services");
 
 const init = async () => {
@@ -118,6 +121,15 @@ const init = async () => {
         playlistsService,
         usersService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: exportsPlaylist,
+      options: {
+        service: ProducerServices,
+        validator: ExportsValidator,
+        playlistsService,
+        songsService,
       },
     },
   ]);
