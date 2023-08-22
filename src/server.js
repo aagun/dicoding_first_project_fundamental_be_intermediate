@@ -138,7 +138,6 @@ const init = async () => {
         service: ProducerServices,
         validator: ExportsValidator,
         playlistsService,
-        songsService,
       },
     },
   ]);
