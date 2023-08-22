@@ -1,11 +1,10 @@
 const ResponseHelper = require("../../utils/ResponseHelper");
 
 class ExportHandler {
-  constructor(service, validator, playlistsService, songsService) {
+  constructor(service, validator, playlistsService) {
     this._service = service;
     this._validator = validator;
     this.playlistsService = playlistsService;
-    this._songsService = songsService;
   }
 
   async postExportPlaylistHandler(request, h) {
@@ -16,18 +15,8 @@ class ExportHandler {
     const { targetEmail } = request.payload;
 
     await this.playlistsService.verifyPlaylistAccess(playlistId, userId);
-    let playlist = await this.playlistsService.findByIdAndOwner(
-      playlistId,
-      userId
-    );
-    const songs = await this._songsService.findByOwnerOrUserId(userId);
 
-    playlist = {
-      ...playlist,
-      songs: songs,
-    };
-
-    this._service.sendMessage("export:playlist", { playlist, targetEmail });
+    this._service.sendMessage("export:playlist", { playlistId, targetEmail });
 
     return ResponseHelper.created(
       h,
