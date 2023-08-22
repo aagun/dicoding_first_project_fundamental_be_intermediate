@@ -28,7 +28,18 @@ const ResponseHelper = {
       })
       .code(HTTP_STATUS.OK);
   },
-  ok: (h, data, message = null) => {
+  ok: (h, data, isCached = false, message = null) => {
+    if (isCached) {
+      return h
+        .response({
+          status: "success",
+          message,
+          data,
+        })
+        .header("X-Data-Source", "cache")
+        .code(HTTP_STATUS.OK);
+    }
+
     return h
       .response({
         status: "success",

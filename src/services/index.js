@@ -7,6 +7,9 @@ const PlaylistSongsServices = require("./PlaylistSongsServices");
 const CollaborationsServices = require("./CollaborationsServices");
 const ActivitiesServices = require("./ActivitiesServices");
 const ProducerServices = require("./ProducerServices");
+const StorageServices = require("./StorageServices");
+const CacheServices = require("./CacheServices");
+const UserAlbumLikes = require("./UserAlbumLikes");
 
 module.exports = {
   AlbumsServices,
@@ -18,4 +21,7 @@ module.exports = {
   CollaborationsServices,
   ActivitiesServices,
   ProducerServices,
+  StorageServices,
+  CacheServices,
+  UserAlbumLikes,
 };
