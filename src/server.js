@@ -1,4 +1,5 @@
 require("dotenv").config();
+const config = require("./utils/config");
 
 const Hapi = require("@hapi/hapi");
 const Jwt = require("@hapi/jwt");
@@ -11,6 +12,7 @@ const {
   authentications,
   playlists,
   collaborations,
+  exportsPlaylist,
 } = require("./api");
 
 const {
@@ -20,6 +22,7 @@ const {
   AuthenticationsValidator,
   PlaylistsValidator,
   CollaborationsValidator,
+  ExportsValidator,
 } = require("./validator");
 
 const {
@@ -30,7 +33,11 @@ const {
   PlaylistsServices,
   PlaylistSongsServices,
   CollaborationsServices,
-  ActivitiesServices
+  ActivitiesServices,
+  ProducerServices,
+  StorageServices,
+  CacheServices,
+  UserAlbumLikes,
 } = require("./services");
 
 const init = async () => {
@@ -40,10 +47,13 @@ const init = async () => {
   const songsService = new SongsServices();
   const usersService = new UsersServices();
   const activitiesService = new ActivitiesServices();
+  const cacheService = new CacheServices();
+  const userAlbumLikes = new UserAlbumLikes(cacheService);
+  const storageService = new StorageServices();
 
   const server = Hapi.server({
-    port: process.env.PORT,
-    host: process.env.HOST,
+    port: config.app.port,
+    host: config.app.host,
     routes: {
       cors: {
         origin: ["*"],
@@ -55,12 +65,12 @@ const init = async () => {
 
   // Defined strategy authentication jwt
   server.auth.strategy("open_music_jwt", "jwt", {
-    keys: process.env.ACCESS_TOKEN_KEY,
+    keys: config.tokenManager.accessTokenKey,
     verify: {
       aud: false,
       iss: false,
       sub: false,
-      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+      maxAgeSec: config.tokenManager.accessTokenAge,
     },
     validate: (artifacts) => ({
       isValid: true,
@@ -76,6 +86,8 @@ const init = async () => {
       options: {
         service: new AlbumsServices(),
         validator: AlbumsValidator,
+        storageService,
+        userAlbumLikes,
       },
     },
     {
@@ -118,6 +130,15 @@ const init = async () => {
         playlistsService,
         usersService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: exportsPlaylist,
+      options: {
+        service: ProducerServices,
+        validator: ExportsValidator,
+        playlistsService,
+        songsService,
       },
     },
   ]);

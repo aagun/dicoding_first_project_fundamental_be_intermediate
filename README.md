@@ -21,7 +21,7 @@
     -e POSTGRES_USER=<NAMA_USER> \
     -e POSTGRES_PASSWORD=<PASSWORD_DATABASE>\
     -e PGDATA=/var/lib/postgresql/data/pgdata \
-    -v "./open-music-data/:/var/lib/postgresql/data" \
+    -v ${PWD}/open-music-data/:/var/lib/postgresql/data \
     -p 5432:5432 \
     postgres:15
 ```

@@ -1,0 +1,42 @@
+version: '3'
+services:
+  postgres:
+    container_name: open-music-db
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: open_music
+    ports:
+      - 5432:5432
+    networks:
+      - dicoding-open-music-network
+    volumes:
+      - ${PWD}/docker-volumes/postgresql/data:/var/lib/postgresql/data
+  rabbitmq:
+    container_name: open-music-message-broker
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - dicoding-open-music-network
+    volumes:
+      - ${PWD}/docker-volumes/rabbitmq/data:/var/lib/rabbitmq
+  redis: 
+    container_name: open-music-cache
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - dicoding-open-music-network
+    volumes:
+      - ${PWD}/docker-volumes/redis/data:/data
+      - ${PWD}/docker-volumes/redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+networks:
+  dicoding-open-music-network:
+    name: dicoding-open-music-network
+    driver: bridge

@@ -29,7 +29,12 @@ class AlbumsServices {
   async findAll() {
     const query = "SELECT * FROM albums";
     const { rows } = await this._pool.query(query);
-    return rows;
+    return rows.map(({ id, name, cover }) => ({
+      id,
+      name,
+      year,
+      coverUrl: cover,
+    }));
   }
 
   async findById(id) {
@@ -41,7 +46,11 @@ class AlbumsServices {
     const { rows } = await this._pool.query(query);
 
     if (rows.length) {
-      return rows[0];
+      return rows.map(({ id, name, cover }) => ({
+        id,
+        name,
+        coverUrl: cover,
+      }))[0];
     }
 
     throw new NotFoundException("Album tidak ditemukan");
@@ -54,6 +63,7 @@ class AlbumsServices {
                 albums.id as id,
                 albums.name as name, 
                 albums.year as year,
+                albums.cover as cover_url,
                 songs.id as song_id,
                 songs.title as song_title,
                 songs.performer as song_performer
@@ -72,6 +82,7 @@ class AlbumsServices {
         id: "",
         name: "",
         year: null,
+        coverUrl: null,
         songs: [],
       };
 
@@ -80,6 +91,7 @@ class AlbumsServices {
           albumSongs.id = album.id;
           albumSongs.name = album.name;
           albumSongs.year = album.year;
+          albumSongs.coverUrl = album.cover_url || null;
         }
 
         if (!album.song_id) {
@@ -134,6 +146,21 @@ class AlbumsServices {
     }
 
     throw new InvariantException("Album gagal dihapus");
+  }
+
+  async updateByIdWithCover(id, cover) {
+    const query = {
+      text: "UPDATE albums SET cover = $1 WHERE id = $2 RETURNING id",
+      values: [cover, id],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    if (rows.length) {
+      return rows[0].id;
+    }
+
+    throw new InvariantException("Album gagal diperbaharui");
   }
 }
 

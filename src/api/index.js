@@ -4,6 +4,7 @@ const users = require("./users");
 const authentications = require("./authentications");
 const playlists = require("./playlists");
 const collaborations = require("./collaborations");
+const exportsPlaylist = require("./exports");
 
 module.exports = {
   albums,
@@ -12,4 +13,5 @@ module.exports = {
   authentications,
   playlists,
   collaborations,
+  exportsPlaylist,
 };
